@@ -1,40 +1,77 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GlobalGear - E-commerce Project powered by Portal API, PYUSD and Solana 
+
+GlobalGear is a modern e-commerce platform built with Next.js, showcasing a collection of branded merchandise. This project demonstrates the integration of blockchain technology for payments using the Portal API, PYUSD stablecoin, and Solana blockchain.
+
+## Features
+
+- **Product Catalog**: Display a grid of products with details and images.
+- **Shopping Cart**: Add products to cart, adjust quantities, and remove items.
+- **Wallet Integration**: Connect to Portal wallet for Solana-based transactions.
+- **Checkout Process**: Secure checkout using PYUSD tokens on the Solana blockchain.
+- **Order Confirmation**: View order details and transaction information.
+- **Responsive Design**: Mobile-friendly interface using Tailwind CSS.
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Portal API (for Solana wallet integration and PYUSD transactions)
+- Solana Web3.js
+- PYUSD (PayPal USD stablecoin on Solana)
+- Airtable (for order management)
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd globalgear
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+   Create a `.env.local` file in the root directory and add the following variables:
+   ```
+   NEXT_PUBLIC_PORTAL_API_KEY=[Your Portal API Key]
+   NEXT_PUBLIC_SOLANA_CHAIN_ID=[Solana Chain ID]
+   NEXT_PUBLIC_SOLANA_RPC_URL=[Solana RPC URL]
+   NEXT_PUBLIC_SOL_MINT=[SOL Mint Address]
+   NEXT_PUBLIC_PYUSD_MINT=[PYUSD Mint Address]
+   AIRTABLE_API_KEY=[Your Airtable API Key]
+   AIRTABLE_BASE_ID=[Your Airtable Base ID]
+   AIRTABLE_TABLE_NAME=[Your Airtable Table Name]
+   ```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- `pages/`: Contains Next.js pages and API routes.
+- `components/`: Reusable React components.
+- `context/`: React context providers for global state management.
+- `config/`: Configuration files, including product data and Portal API settings.
+- `styles/`: Global styles and Tailwind CSS configuration.
+- `public/`: Static assets like images.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+The project is ready to be deployed on platforms like Vercel or Netlify. Make sure to set up the environment variables in your deployment platform's settings, including the necessary Portal API, Solana, and PYUSD configurations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is open-source and available under the [MIT License](LICENSE).
