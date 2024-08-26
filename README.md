@@ -26,8 +26,8 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
 
 1. Clone the repository:
    ```bash
-   git clone [repository-url]
-   cd globalgear
+   git clone https://github.com/introvertmac/portal-ecomm.git
+   cd portal-ecomm
    ```
 
 2. Install dependencies:
@@ -71,7 +71,3 @@ The project is ready to be deployed on platforms like Vercel or Netlify. Make su
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
