@@ -95,8 +95,8 @@ export default function OrderConfirmation() {
   useEffect(() => {
     const submitOrderToAirtable = async () => {
       if (orderDetails && txnHash && !isSubmitting) {
-        setIsSubmitting(true)
-        setSubmitError(null)
+        setIsSubmitting(true);
+        setSubmitError(null);
 
         try {
           const response = await fetch('/api/submitOrder', {
@@ -105,24 +105,24 @@ export default function OrderConfirmation() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ orderDetails, txnHash, walletAddress: address }),
-          })
+          });
 
           if (!response.ok) {
-            throw new Error('Failed to submit order to Airtable')
+            throw new Error('Failed to submit order to Airtable');
           }
 
           // Order submitted successfully
         } catch (error) {
-          console.error('Error submitting order:', error)
-          setSubmitError('Failed to save order details. Please contact support.')
+          console.error('Error submitting order:', error);
+          setSubmitError('Failed to save order details. Please contact support.');
         } finally {
-          setIsSubmitting(false)
+          setIsSubmitting(false);
         }
       }
-    }
+    };
 
-    submitOrderToAirtable()
-  }, [orderDetails, txnHash, address])
+    submitOrderToAirtable();
+  }, [orderDetails, txnHash, address, isSubmitting]);
 
   if (isSubmitting) {
     return (
@@ -152,7 +152,7 @@ export default function OrderConfirmation() {
       <Layout>
         <div className="max-w-2xl mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl sm:text-3xl font-bold mb-6">Order Not Found</h1>
-          <p className="text-lg sm:text-xl mb-8">We couldn't find your order details. Please try placing your order again.</p>
+          <p className="text-lg sm:text-xl mb-8">We couldn&apos;t find your order details. Please try placing your order again.</p>
           <Link href="/" passHref>
             <Button>Return to Home</Button>
           </Link>

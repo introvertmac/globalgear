@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import Portal from '@portal-hq/web';
 
 interface WalletContextType {
@@ -30,42 +30,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingWallet, setIsCreatingWallet] = useState(false);
 
-  useEffect(() => {
-    const initPortal = async () => {
-      setIsLoading(true);
-      const newPortal = new Portal({
-        apiKey: process.env.NEXT_PUBLIC_PORTAL_API_KEY as string,
-        autoApprove: true,
-        rpcConfig: {
-          [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
-        },
-      });
-
-      newPortal.onReady(async () => {
-        setPortal(newPortal);
-        await checkWalletStatus(newPortal);
-        setIsLoading(false);
-      });
-    };
-
-    initPortal();
-  }, []);
-
-  const checkWalletStatus = async (portalInstance: Portal) => {
-    try {
-      const walletExists = await portalInstance.doesWalletExist();
-      if (walletExists) {
-        const addr = await portalInstance.getSolanaAddress();
-        setAddress(addr);
-        setIsConnected(true);
-        await refreshBalance(portalInstance, addr);
-      }
-    } catch (error) {
-      console.error('Error checking wallet status:', error);
-    }
-  };
-
-  const refreshBalance = async (portalInstance: Portal, addr: string, retries = 3) => {
+  const refreshBalance = useCallback(async (portalInstance: Portal, addr: string, retries = 3) => {
     try {
       const response = await fetch('/api/getSolanaAssets');
       if (!response.ok) {
@@ -89,7 +54,42 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setBalance('Error');
       }
     }
-  };
+  }, []);
+
+  const checkWalletStatus = useCallback(async (portalInstance: Portal) => {
+    try {
+      const walletExists = await portalInstance.doesWalletExist();
+      if (walletExists) {
+        const addr = await portalInstance.getSolanaAddress();
+        setAddress(addr);
+        setIsConnected(true);
+        await refreshBalance(portalInstance, addr);
+      }
+    } catch (error) {
+      console.error('Error checking wallet status:', error);
+    }
+  }, [refreshBalance]);
+
+  useEffect(() => {
+    const initPortal = async () => {
+      setIsLoading(true);
+      const newPortal = new Portal({
+        apiKey: process.env.NEXT_PUBLIC_PORTAL_API_KEY as string,
+        autoApprove: true,
+        rpcConfig: {
+          [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
+        },
+      });
+
+      newPortal.onReady(async () => {
+        setPortal(newPortal);
+        await checkWalletStatus(newPortal);
+        setIsLoading(false);
+      });
+    };
+
+    initPortal();
+  }, [checkWalletStatus]);
 
   const connect = async () => {
     if (portal) {
