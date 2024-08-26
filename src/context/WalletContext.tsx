@@ -82,15 +82,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         host: 'https://globalgear.manishlabs.xyz/'
       });
 
-      newPortal.onReady(async () => {
+      newPortal.onReady(() => {
         setPortal(newPortal);
-        await checkWalletStatus(newPortal);
         setIsLoading(false);
+        checkWalletStatus(newPortal);
       });
     };
 
     initPortal();
-  }, [checkWalletStatus]);
+  }, []);
 
   const connect = async () => {
     if (portal) {
