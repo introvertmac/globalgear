@@ -79,18 +79,17 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         rpcConfig: {
           [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
         },
-        host: 'https://globalgear.manishlabs.xyz/'
       });
 
-      newPortal.onReady(() => {
+      newPortal.onReady(async () => {
         setPortal(newPortal);
+        await checkWalletStatus(newPortal);
         setIsLoading(false);
-        checkWalletStatus(newPortal);
       });
     };
 
     initPortal();
-  }, []);
+  }, [checkWalletStatus]);
 
   const connect = async () => {
     if (portal) {
