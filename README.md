@@ -26,8 +26,8 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/introvertmac/portal-ecomm.git
-   cd portal-ecomm
+   git clone https://github.com/introvertmac/globalgear.git
+   cd globalgear
    ```
 
 2. Install dependencies:
