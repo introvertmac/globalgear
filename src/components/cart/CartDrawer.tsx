@@ -71,7 +71,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1, item.size)}
-                      className="w-12 text-center border rounded-md"
+                      className="w-12 text-center border rounded-md text-xs sm:text-sm"
                     />
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)}

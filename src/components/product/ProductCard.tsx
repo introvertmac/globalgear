@@ -32,7 +32,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           src={product.image}
           alt={product.name}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
           priority={priority}
           onLoad={() => setImageLoaded(true)}
@@ -40,10 +40,10 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         />
       </div>
       <div className="p-4 flex flex-col flex-grow">
-        <h2 className="text-lg font-semibold mb-2 text-black">{product.name}</h2>
-        <p className="text-sm text-gray-600 mb-4 flex-grow">{product.description}</p>
+        <h2 className="text-base sm:text-lg font-semibold mb-2 text-black">{product.name}</h2>
+        <p className="text-xs sm:text-sm text-gray-600 mb-4 flex-grow">{product.description}</p>
         <div className="mt-auto">
-          <p className="text-[#3e71f8] font-bold mb-2">{product.price} PYUSD</p>
+          <p className="text-[#3e71f8] font-bold mb-2 text-sm sm:text-base">{product.price} PYUSD</p>
           {product.sizes && (
             <div className="mb-2">
               <label htmlFor={`size-${product.id}`} className="sr-only">Size</label>
@@ -51,7 +51,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                 id={`size-${product.id}`}
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
-                className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#3e71f8] focus:border-[#3e71f8] sm:text-sm"
+                className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#3e71f8] focus:border-[#3e71f8] text-xs sm:text-sm"
               >
                 {product.sizes.map((size) => (
                   <option key={size} value={size}>{size}</option>
@@ -61,9 +61,9 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           )}
           <Button 
             onClick={handleAddToCart} 
-            className="w-full active:scale-95 transition-transform duration-150"
+            className="w-full active:scale-95 transition-transform duration-150 text-xs sm:text-sm"
           >
-            <ShoppingCart size={18} className="mr-2" />
+            <ShoppingCart size={16} className="mr-2" />
             Add to Cart
           </Button>
         </div>

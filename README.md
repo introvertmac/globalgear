@@ -9,6 +9,7 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
 - **Wallet Integration**: Connect to Portal wallet for Solana-based transactions.
 - **Checkout Process**: Secure checkout using PYUSD tokens on the Solana blockchain.
 - **Order Confirmation**: View order details and transaction information.
+- **Order History**: Access a list of past orders and their details.
 - **Responsive Design**: Mobile-friendly interface using Tailwind CSS.
 
 ## Tech Stack
@@ -20,7 +21,7 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
 - Portal API (for Solana wallet integration and PYUSD transactions)
 - Solana Web3.js
 - PYUSD (PayPal USD stablecoin on Solana)
-- Airtable (for order management)
+- Airtable (for order management and history)
 
 ## Getting Started
 
@@ -63,6 +64,21 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
 - `config/`: Configuration files, including product data and Portal API settings.
 - `styles/`: Global styles and Tailwind CSS configuration.
 - `public/`: Static assets like images.
+
+## Airtable Structure
+
+The project uses Airtable for order management and history. The Airtable base consists of a single table with the following structure:
+
+- `id`: Unique identifier for each order (Text)
+- `customerEmail`: Email address of the customer (Email)
+- `orderDate`: Date and time of the order (DateTime)
+- `totalAmount`: Total amount of the order in PYUSD (Number)
+- `status`: Current status of the order (e.g., "Pending", "Shipped", "Delivered") (Single Select)
+- `items`: JSON string containing the ordered items (Long Text)
+- `shippingAddress`: JSON string containing the shipping address details (Long Text)
+- `transactionHash`: Solana transaction hash for the payment (Text)
+
+This structure allows for efficient storage and retrieval of order information, enabling features like order history and status tracking.
 
 ## Deployment
 

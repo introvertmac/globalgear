@@ -21,8 +21,10 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        {children}
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {children}
+        </div>
       </main>
       <Footer />
       {!isCheckoutPage && <CartDrawer isOpen={state.isCartOpen} onClose={closeCart} />}
