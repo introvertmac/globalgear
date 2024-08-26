@@ -79,7 +79,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         rpcConfig: {
           [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
         },
-        host: 'https://portal.manishlabs.xyz'
+        host: 'portal.manishlabs.xyz'
       });
 
       newPortal.onReady(async () => {
