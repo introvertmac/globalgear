@@ -49,6 +49,7 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({
         rpcConfig: {
           [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
         },
+        host: 'https://globalgear.vercel.app'
       });
 
       newPortal.onReady(() => {
