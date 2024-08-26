@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '@/components/layout/Layout'
 import { useCart } from '@/context/CartContext'
@@ -32,12 +32,6 @@ export default function Checkout() {
     country: ''
   })
   const [email, setEmail] = useState('')
-
-  useEffect(() => {
-    if (cartState.items.length === 0) {
-      router.push('/')
-    }
-  }, [cartState.items, router])
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
