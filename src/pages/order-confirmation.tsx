@@ -95,8 +95,8 @@ export default function OrderConfirmation() {
   useEffect(() => {
     const submitOrderToAirtable = async () => {
       if (orderDetails && txnHash && !isSubmitting) {
-        setIsSubmitting(true);
-        setSubmitError(null);
+        setIsSubmitting(true)
+        setSubmitError(null)
 
         try {
           const response = await fetch('/api/submitOrder', {
@@ -105,24 +105,26 @@ export default function OrderConfirmation() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ orderDetails, txnHash, walletAddress: address }),
-          });
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to submit order to Airtable');
+            throw new Error('Failed to submit order to Airtable')
           }
 
           // Order submitted successfully
         } catch (error) {
-          console.error('Error submitting order:', error);
-          setSubmitError('Failed to save order details. Please contact support.');
+          console.error('Error submitting order:', error)
+          setSubmitError('Failed to save order details. Please contact support.')
         } finally {
-          setIsSubmitting(false);
+          setIsSubmitting(false)
         }
       }
-    };
+    }
 
-    submitOrderToAirtable();
-  }, [orderDetails, txnHash, address, isSubmitting]);
+    if (orderDetails && txnHash && !isSubmitting) {
+      submitOrderToAirtable()
+    }
+  }, [orderDetails, txnHash, address]);
 
   if (isSubmitting) {
     return (
