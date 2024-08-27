@@ -45,7 +45,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const refreshBalance = useCallback(async (portalInstance: Portal, addr: string, retries = 3) => {
     try {
-      const response = await fetch('/api/getSolanaAssets');
+      const response = await fetch(`/api/getSolanaAssets?address=${addr}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -116,19 +116,16 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         setIsLoading(true);
         const walletExists = await portal.doesWalletExist();
-        if (walletExists) {
-          const addr = await portal.getSolanaAddress();
-          setAddress(addr);
-          setIsConnected(true);
-          await refreshBalance(portal, addr);
-        } else {
+        if (!walletExists) {
           setIsCreatingWallet(true);
           await portal.createWallet();
-          const addr = await portal.getSolanaAddress();
-          setAddress(addr);
-          setIsConnected(true);
-          await refreshBalance(portal, addr);
+          // Wait for the wallet to be fully created
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
+        const addr = await portal.getSolanaAddress();
+        setAddress(addr);
+        setIsConnected(true);
+        await refreshBalance(portal, addr);
       } catch (error) {
         console.error('Error connecting wallet:', error);
       } finally {
