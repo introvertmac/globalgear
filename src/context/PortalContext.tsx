@@ -49,7 +49,6 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({
         rpcConfig: {
           [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
         },
-        host: 'portal.globalgear.manishlabs.xyz'
       });
 
       newPortal.onReady(() => {
@@ -105,29 +104,49 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({
           if (!portal || !portal.ready)
             throw new Error('Portal has not initialised');
 
-          const res = await fetch('/api/buildSolanaTransaction', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              to,
-              token: tokenMint,
-              amount: String(tokenAmount),
-            }),
-          });
+          try {
+            // Check if wallet exists and is connected
+            const walletExists = await portal.doesWalletExist();
+            if (!walletExists) {
+              throw new Error('Wallet does not exist. Please create a wallet first.');
+            }
 
-          const data = await res.json();
+            // Replace the isConnected check with ready check
+            if (!portal.ready) {
+              throw new Error('Wallet is not connected. Please connect your wallet.');
+            }
 
-          if (data.error) throw new Error(data.error);
+            const res = await fetch('/api/buildSolanaTransaction', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to,
+                token: tokenMint,
+                amount: String(tokenAmount),
+              }),
+            });
 
-          const txnHash = await portal.request({
-            chainId: process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string,
-            method: 'sol_signAndSendTransaction',
-            params: [data.transaction],
-          });
+            const data = await res.json();
 
-          return txnHash as string;
+            if (data.error) throw new Error(data.error);
+
+            console.log('Transaction data:', data); // Log transaction data
+
+            const txnHash = await portal.request({
+              chainId: process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string,
+              method: 'sol_signAndSendTransaction',
+              params: [data.transaction],
+            });
+
+            console.log('Transaction hash:', txnHash); // Log transaction hash
+
+            return txnHash as string;
+          } catch (error) {
+            console.error('Error in sendTokensOnSolana:', error);
+            throw error;
+          }
         },
       }}
     >
