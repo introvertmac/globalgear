@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import Portal from '@portal-hq/web';
+import axios from 'axios';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -29,6 +30,18 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [balance, setBalance] = useState('0');
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingWallet, setIsCreatingWallet] = useState(false);
+  const [clientSessionToken, setClientSessionToken] = useState<string | null>(null);
+
+  const createClientSession = async () => {
+    try {
+      const response = await axios.post('/api/createClientSession');
+      setClientSessionToken(response.data.clientSessionToken);
+      return response.data.clientSessionToken;
+    } catch (error) {
+      console.error('Error creating client session:', error);
+      throw error;
+    }
+  };
 
   const refreshBalance = useCallback(async (portalInstance: Portal, addr: string, retries = 3) => {
     try {
@@ -73,20 +86,26 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     const initPortal = async () => {
       setIsLoading(true);
-      const newPortal = new Portal({
-        apiKey: process.env.NEXT_PUBLIC_PORTAL_API_KEY as string,
-        autoApprove: true,
-        rpcConfig: {
-          [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
-        },
-        host: 'portal.globalgear.manishlabs.xyz'
-      });
+      try {
+        const token = await createClientSession();
+        const newPortal = new Portal({
+          apiKey: token,
+          autoApprove: true,
+          rpcConfig: {
+            [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
+          },
+          host: 'portal.globalgear.manishlabs.xyz'
+        });
 
-      newPortal.onReady(async () => {
-        setPortal(newPortal);
-        await checkWalletStatus(newPortal);
+        newPortal.onReady(async () => {
+          setPortal(newPortal);
+          await checkWalletStatus(newPortal);
+          setIsLoading(false);
+        });
+      } catch (error) {
+        console.error('Error initializing Portal:', error);
         setIsLoading(false);
-      });
+      }
     };
 
     initPortal();
@@ -123,6 +142,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsConnected(false);
     setAddress(null);
     setBalance('0');
+    setClientSessionToken(null);
   };
 
   return (
