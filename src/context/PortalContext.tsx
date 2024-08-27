@@ -1,15 +1,30 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Portal from '@portal-hq/web';
 
-interface PortalContextType {
+interface ITokenBalance {
+  balance: string;
+  decimals: number;
+  name: string;
+  rawBalance: string;
+  symbol: string;
+  metadata: Record<string, unknown> & {
+    tokenMintAddress: string;
+  };
+}
+
+interface IPortalContext {
   ready: boolean;
   isLoading: boolean;
   getSolanaAddress: () => Promise<string>;
-  getSolanaTokenBalances: () => Promise<any[]>;
-  sendTokensOnSolana: (to: string, tokenMint: string, tokenAmount: number) => Promise<string>;
+  getSolanaTokenBalances: () => Promise<ITokenBalance[]>;
+  sendTokensOnSolana: (
+    to: string,
+    tokenMint: string,
+    tokenAmount: number,
+  ) => Promise<string>;
 }
 
-const PortalContext = createContext<PortalContextType | undefined>(undefined);
+const PortalContext = createContext<IPortalContext>({} as IPortalContext);
 
 export const usePortal = () => {
   const context = useContext(PortalContext);
@@ -19,33 +34,27 @@ export const usePortal = () => {
   return context;
 };
 
-export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [portal, setPortal] = useState<Portal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const initPortal = async () => {
-      try {
-        const response = await fetch('/api/createClientSession', { method: 'POST' });
-        const { clientSessionToken } = await response.json();
+      setIsLoading(true);
+      const newPortal = new Portal({
+        apiKey: process.env.NEXT_PUBLIC_PORTAL_API_KEY as string,
+        autoApprove: true,
+        rpcConfig: {
+          [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
+        },
+      });
 
-        const newPortal = new Portal({
-          apiKey: clientSessionToken,
-          autoApprove: true,
-          rpcConfig: {
-            [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
-          },
-          host: 'portal.globalgear.manishlabs.xyz'
-        });
-
-        newPortal.onReady(() => {
-          setPortal(newPortal);
-          setIsLoading(false);
-        });
-      } catch (error) {
-        console.error('Error initializing Portal:', error);
+      newPortal.onReady(() => {
+        setPortal(newPortal);
         setIsLoading(false);
-      }
+      });
     };
 
     initPortal();
@@ -95,49 +104,29 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (!portal || !portal.ready)
             throw new Error('Portal has not initialised');
 
-          try {
-            // Check if wallet exists and is connected
-            const walletExists = await portal.doesWalletExist();
-            if (!walletExists) {
-              throw new Error('Wallet does not exist. Please create a wallet first.');
-            }
+          const res = await fetch('/api/buildSolanaTransaction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to,
+              token: tokenMint,
+              amount: String(tokenAmount),
+            }),
+          });
 
-            // Replace the isConnected check with ready check
-            if (!portal.ready) {
-              throw new Error('Wallet is not connected. Please connect your wallet.');
-            }
+          const data = await res.json();
 
-            const res = await fetch('/api/buildSolanaTransaction', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                to,
-                token: tokenMint,
-                amount: String(tokenAmount),
-              }),
-            });
+          if (data.error) throw new Error(data.error);
 
-            const data = await res.json();
+          const txnHash = await portal.request({
+            chainId: process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string,
+            method: 'sol_signAndSendTransaction',
+            params: [data.transaction],
+          });
 
-            if (data.error) throw new Error(data.error);
-
-            console.log('Transaction data:', data); // Log transaction data
-
-            const txnHash = await portal.request({
-              chainId: process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string,
-              method: 'sol_signAndSendTransaction',
-              params: [data.transaction],
-            });
-
-            console.log('Transaction hash:', txnHash); // Log transaction hash
-
-            return txnHash as string;
-          } catch (error) {
-            console.error('Error in sendTokensOnSolana:', error);
-            throw error;
-          }
+          return txnHash as string;
         },
       }}
     >
