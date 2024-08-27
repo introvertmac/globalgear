@@ -1,30 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Portal from '@portal-hq/web';
 
-interface ITokenBalance {
-  balance: string;
-  decimals: number;
-  name: string;
-  rawBalance: string;
-  symbol: string;
-  metadata: Record<string, unknown> & {
-    tokenMintAddress: string;
-  };
-}
-
-interface IPortalContext {
+interface PortalContextType {
   ready: boolean;
   isLoading: boolean;
   getSolanaAddress: () => Promise<string>;
-  getSolanaTokenBalances: () => Promise<ITokenBalance[]>;
-  sendTokensOnSolana: (
-    to: string,
-    tokenMint: string,
-    tokenAmount: number,
-  ) => Promise<string>;
+  getSolanaTokenBalances: () => Promise<any[]>;
+  sendTokensOnSolana: (to: string, tokenMint: string, tokenAmount: number) => Promise<string>;
 }
 
-const PortalContext = createContext<IPortalContext>({} as IPortalContext);
+const PortalContext = createContext<PortalContextType | undefined>(undefined);
 
 export const usePortal = () => {
   const context = useContext(PortalContext);
@@ -34,28 +19,33 @@ export const usePortal = () => {
   return context;
 };
 
-export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [portal, setPortal] = useState<Portal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const initPortal = async () => {
-      setIsLoading(true);
-      const newPortal = new Portal({
-        apiKey: process.env.NEXT_PUBLIC_PORTAL_API_KEY as string,
-        autoApprove: true,
-        rpcConfig: {
-          [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
-        },
-        host: 'portal.globalgear.manishlabs.xyz'
-      });
+      try {
+        const response = await fetch('/api/createClientSession', { method: 'POST' });
+        const { clientSessionToken } = await response.json();
 
-      newPortal.onReady(() => {
-        setPortal(newPortal);
+        const newPortal = new Portal({
+          apiKey: clientSessionToken,
+          autoApprove: true,
+          rpcConfig: {
+            [process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID as string]: process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string,
+          },
+          host: 'portal.globalgear.manishlabs.xyz'
+        });
+
+        newPortal.onReady(() => {
+          setPortal(newPortal);
+          setIsLoading(false);
+        });
+      } catch (error) {
+        console.error('Error initializing Portal:', error);
         setIsLoading(false);
-      });
+      }
     };
 
     initPortal();
