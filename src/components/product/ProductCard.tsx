@@ -70,4 +70,5 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       </div>
     </div>
   )
+  
 }

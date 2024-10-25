@@ -144,4 +144,5 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       {children}
     </WalletContext.Provider>
   );
+  
 };

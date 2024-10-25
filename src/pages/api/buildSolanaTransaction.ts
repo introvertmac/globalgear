@@ -14,6 +14,7 @@ export default async function handler(
     return res.status(400).json({ message: 'Invalid payload' });
   }
 
+  
   try {
     const response = await fetch(
       `https://api.portalhq.io/api/v3/clients/me/chains/${process.env.NEXT_PUBLIC_SOLANA_CHAIN_ID}/assets/send/build-transaction`,

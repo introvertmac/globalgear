@@ -51,4 +51,5 @@ export interface Product {
       price: 18,
       image: "/images/products/waterbottle.jpeg"
     }
+    
   ];

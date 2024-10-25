@@ -14,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </WalletProvider>
     </PortalProvider>
   )
+  
 }
 
 export default MyApp

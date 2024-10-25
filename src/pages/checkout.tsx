@@ -15,6 +15,7 @@ interface ShippingAddress {
   country: string;
 }
 
+
 const RECIPIENT_ADDRESS = 'CRKViCKjQ6hpPmf7tJq29kjw3BTGCRjL5xsytzFzSgGL';
 const PYUSD_TOKEN_ADDRESS = 'CXk2AMBfi3TwaEL2468s6zP8xq9NxTXjp9gjMgzeUynM';
 

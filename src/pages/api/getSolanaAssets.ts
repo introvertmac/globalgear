@@ -13,4 +13,5 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   );
 
   res.json(await assetRes.json());
+  
 }

@@ -222,5 +222,6 @@ export default function OrderConfirmation() {
         </div>
       </div>
     </Layout>
+    
   )
 }

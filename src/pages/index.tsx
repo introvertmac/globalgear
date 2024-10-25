@@ -10,5 +10,6 @@ export default function Home() {
         <ProductGrid products={products} />
       </div>
     </Layout>
+    
   )
 }

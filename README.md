@@ -41,7 +41,7 @@ GlobalGear is a modern e-commerce platform built with Next.js, showcasing a coll
    ```
    NEXT_PUBLIC_PORTAL_API_KEY=[Your Portal API Key]
    NEXT_PUBLIC_SOLANA_CHAIN_ID=[Solana Chain ID]
-   NEXT_PUBLIC_SOLANA_RPC_URL=[Solana RPC URL]
+   NEXT_PUBLIC_SOLANA_RPC_URL=[Quicknode RPC URL]
    NEXT_PUBLIC_SOL_MINT=[SOL Mint Address]
    NEXT_PUBLIC_PYUSD_MINT=[PYUSD Mint Address]
    AIRTABLE_API_KEY=[Your Airtable API Key]
