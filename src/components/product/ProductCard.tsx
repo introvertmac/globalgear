@@ -43,7 +43,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         <h2 className="text-base sm:text-lg font-semibold mb-2 text-black">{product.name}</h2>
         <p className="text-xs sm:text-sm text-gray-600 mb-4 flex-grow">{product.description}</p>
         <div className="mt-auto">
-          <p className="text-[#3e71f8] font-bold mb-2 text-sm sm:text-base">{product.price} PYUSD</p>
+          <p className="text-black font-bold mb-2 text-sm sm:text-base">{product.price} PYUSD</p>
           {product.sizes && (
             <div className="mb-2">
               <label htmlFor={`size-${product.id}`} className="sr-only">Size</label>

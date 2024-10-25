@@ -23,7 +23,7 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex flex-wrap justify-between items-center">
-        <Link href="/" className="text-xl sm:text-2xl font-bold text-[#3e71f8]">
+        <Link href="/" className="text-xl sm:text-2xl font-bold text-black">
           GlobalGear
         </Link>
         
@@ -32,7 +32,7 @@ export default function Header() {
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
-          <Menu size={24} className="text-[#3e71f8]" />
+          <Menu size={24} className="text-black" />
         </button>
 
         <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:flex items-center w-full sm:w-auto mt-4 sm:mt-0`}>
@@ -42,7 +42,7 @@ export default function Header() {
               className="mr-4 relative"
               aria-label="Shopping cart"
             >
-              <ShoppingCart size={24} className="text-[#3e71f8]" />
+              <ShoppingCart size={24} className="text-black" />
               {state.items.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                   {state.items.length}
@@ -56,4 +56,3 @@ export default function Header() {
     </header>
   )
 }
-

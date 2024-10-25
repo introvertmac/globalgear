@@ -70,9 +70,9 @@ export default function WalletConnection() {
           className="bg-white border border-[#3e71f8] rounded-full py-2 px-4 text-sm flex items-center cursor-pointer"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
-          <span className="font-medium mr-2 text-[#535a6c]">{address.slice(0, 4)}...{address.slice(-4)}</span>
-          <span className="text-[#3e71f8] font-bold mr-2">{balance} PYUSD</span>
-          <ChevronDown size={16} className="text-[#3e71f8]" />
+          <span className="font-medium mr-2 text-black">{address.slice(0, 4)}...{address.slice(-4)}</span>
+          <span className="text-black font-bold mr-2">{balance} PYUSD</span>
+          <ChevronDown size={16} className="text-black" />
         </div>
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
@@ -117,4 +117,3 @@ export default function WalletConnection() {
     </Button>
   )
 }
-
