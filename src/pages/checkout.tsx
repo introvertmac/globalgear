@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '@/components/layout/Layout'
 import { useCart } from '@/context/CartContext'
@@ -33,6 +33,7 @@ export default function Checkout() {
     country: ''
   })
   const [email, setEmail] = useState('')
+  const [inrRate, setInrRate] = useState<number | null>(null)
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -77,6 +78,34 @@ export default function Checkout() {
       setIsProcessing(false)
     }
   }
+
+  useEffect(() => {
+    const fetchInrRate = async () => {
+      try {
+        const response = await fetch(process.env.NEXT_PUBLIC_SOLANA_RPC_URL!, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            method: 'forex_getExchangeRate',
+            params: ['USD', ['INR']], // Fixed: Changed from '["INR"]' to ['INR']
+            id: 1,
+            jsonrpc: '2.0'
+          })
+        })
+
+        const data = await response.json()
+        if (data.result && data.result.rates && data.result.rates.INR) {
+          setInrRate(data.result.rates.INR)
+        }
+      } catch (error) {
+        console.error('Error fetching INR rate:', error)
+      }
+    }
+
+    fetchInrRate()
+  }, [])
 
   if (isPortalLoading) {
     return (
@@ -165,13 +194,27 @@ export default function Checkout() {
             {cartState.items.map((item) => (
               <div key={`${item.id}-${item.size}`} className="flex justify-between items-center mb-2">
                 <span>{item.name} {item.size ? `(${item.size})` : ''} x {item.quantity}</span>
-                <span>{(item.price * item.quantity).toFixed(2)} PYUSD</span>
+                <div className="text-right">
+                  <div>{(item.price * item.quantity).toFixed(2)} PYUSD</div>
+                  {inrRate && (
+                    <div className="text-sm text-gray-600">
+                      ≈ ₹{(item.price * item.quantity * inrRate).toFixed(2)}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
             <div className="border-t pt-4 mt-4">
               <div className="flex justify-between items-center font-bold">
                 <span>Total</span>
-                <span>{cartState.total.toFixed(2)} PYUSD</span>
+                <div className="text-right">
+                  <div className="text-lg">{cartState.total.toFixed(2)} PYUSD</div>
+                  {inrRate && (
+                    <div className="text-sm text-gray-600">
+                      ≈ ₹{(cartState.total * inrRate).toFixed(2)}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
